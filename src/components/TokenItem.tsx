@@ -1,0 +1,44 @@
+import React from "react";
+import { WalletBalance, useWalletStore } from "../store/walletStore";
+
+interface TokenItemProps {
+  token: WalletBalance;
+}
+
+const TokenItem: React.FC<TokenItemProps> = ({ token }) => {
+  const { getCurrencyDetails, getUsdBalance } = useWalletStore();
+
+  const currencyInfo = getCurrencyDetails(token.currency);
+  const usdBalance = getUsdBalance(token.currency);
+
+  if (!currencyInfo) {
+    return null; // 如果没有找到币种信息，不显示
+  }
+
+  return (
+    <div className="flex items-center justify-between p-4 hover:bg-gray-50">
+      <div className="flex items-center">
+        <div className="w-10 h-10 mr-4">
+          <img
+            src={currencyInfo.colorful_image_url}
+            alt={currencyInfo.name}
+            className="w-full h-full object-contain"
+          />
+        </div>
+        <div>
+          <div className="font-medium text-gray-900">{currencyInfo.name}</div>
+          <div className="text-sm text-gray-500">{currencyInfo.symbol}</div>
+        </div>
+      </div>
+
+      <div className="text-right">
+        <div className="font-medium text-gray-900">
+          {token.amount} {token.currency}
+        </div>
+        <div className="text-sm text-gray-500">$ {usdBalance.toFixed(2)}</div>
+      </div>
+    </div>
+  );
+};
+
+export default TokenItem;

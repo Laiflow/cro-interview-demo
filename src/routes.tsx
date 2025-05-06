@@ -1,14 +1,10 @@
 import React from "react";
-import { Route, Routes } from "react-router-dom";
+import { useRoutes } from "react-router-dom";
+import { routesConfig } from "./routes/index";
 
-import Count from "./pages/Count";
-import Home from "./pages/Home";
-import NotFound from "./pages/NotFound";
+const AppRoutes: React.FC = () => {
+  const routes = useRoutes(routesConfig);
+  return routes;
+};
 
-export default (
-  <Routes>
-    <Route path="/" element={<Home />} />
-    <Route path="/count" element={<Count />} />
-    <Route path="*" element={<NotFound />} />
-  </Routes>
-);
+export default <AppRoutes />;
