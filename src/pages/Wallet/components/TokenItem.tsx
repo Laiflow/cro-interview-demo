@@ -1,17 +1,18 @@
 import React, { memo } from "react";
-import { useCurrencyStore } from "../../../store/atom/currency";
+import { useCurrencyStore } from "../../../stores/atom/currency";
 import { WalletBalance } from "../../../types/wallet";
+import CoinCodeToName from "@/components/organism/CoinCodeToName";
+import PrettyAmountCoin from "@/components/organism/PrettyAmountCoin";
+import PrettyPrice from "@/components/organism/PrettyPrice";
 
 interface TokenItemProps {
   token: WalletBalance;
 }
 
 const TokenItem: React.FC<TokenItemProps> = ({ token }) => {
-  const { getCurrency, getRate } = useCurrencyStore();
+  const { getCurrency } = useCurrencyStore();
 
   const currencyInfo = getCurrency(token.currency);
-  const rate = getRate(token.currency);
-  const usdBalance = token.amount * rate;
 
   if (!currencyInfo) {
     return null; // 如果没有找到币种信息，不显示
@@ -28,16 +29,19 @@ const TokenItem: React.FC<TokenItemProps> = ({ token }) => {
           />
         </div>
         <div>
-          <div className="font-medium text-gray-900">{currencyInfo.name}</div>
-          <div className="text-sm text-gray-500">{currencyInfo.symbol}</div>
+          <div className="font-medium text-gray-900">
+            <CoinCodeToName coin={token.currency} />
+          </div>
         </div>
       </div>
 
       <div className="text-right">
         <div className="font-medium text-gray-900">
-          {token.amount} {token.currency}
+          <PrettyAmountCoin code={token.currency} amount={token.amount} />
         </div>
-        <div className="text-sm text-gray-500">$ {usdBalance.toFixed(2)}</div>
+        <div className="text-sm text-gray-500">
+          $ <PrettyPrice>{token.amount}</PrettyPrice>
+        </div>
       </div>
     </div>
   );

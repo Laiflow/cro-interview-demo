@@ -2,7 +2,7 @@ import { useEffect } from "react";
 import {
   useCurrencyStore,
   initializeMockCurrencyData,
-} from "../../store/atom/currency";
+} from "../../stores/atom/currency";
 
 /**
  * 使用加密货币Socket数据

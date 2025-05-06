@@ -1,6 +1,8 @@
 import { useQuery } from "@tanstack/react-query";
-import { fetchWalletBalance } from "../utils/mockApi";
+import { fetchWalletBalance } from "../services/mockApi";
 import { WalletBalance } from "../types/wallet";
+import { COMMON_REFRESH_INTERVAL } from "@/constants";
+import { PersistTimeMap } from "@/config/queryClient";
 
 export interface WalletBalanceResponse {
   ok: boolean;
@@ -12,7 +14,8 @@ export const useWalletBalanceQuery = (options = {}) => {
   return useQuery<WalletBalanceResponse>({
     queryKey: ["walletBalance"],
     queryFn: fetchWalletBalance,
-    staleTime: 5 * 60 * 1000, // 5 minutes
+    staleTime: PersistTimeMap.disabled,
+    refetchInterval: COMMON_REFRESH_INTERVAL,
     ...options,
   });
 };

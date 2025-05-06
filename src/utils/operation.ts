@@ -91,7 +91,7 @@ export const abs = (a) => {
 
 export const toFixed = (a) => {
   a = transformParam(a);
-  return (b, mod = Decimal.ROUND_HALF_UP) => {
+  return (b, mod = Decimal.ROUND_DOWN) => {
     if (b == null) {
       return a.toFixed();
     }

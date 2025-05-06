@@ -1,7 +1,9 @@
-import React from "react";
-import { useCurrencyStore } from "../../store/atom/currency";
+import React, { useCallback } from "react";
+import { useCurrencyStore } from "../../stores/atom/currency";
 import { useWalletBalanceQuery } from "../../hooks/useWalletBalanceQuery";
 import TokenList from "./components/TokenList";
+import { useCreation } from "ahooks";
+import { toFixed } from "@/utils/operation";
 
 const WalletDashboard: React.FC = () => {
   // 使用React Query获取钱包余额
@@ -12,29 +14,29 @@ const WalletDashboard: React.FC = () => {
     refetch,
   } = useWalletBalanceQuery();
   // 从currency store获取汇率信息
-  const store = useCurrencyStore();
-  const { getRate } = store;
+  const { rates } = useCurrencyStore();
 
   // 获取所有钱包余额
   const walletBalances = walletData?.wallet || [];
 
   // 计算某个货币的USD价值
-  const getUsdBalance = (currency: string) => {
-    const balance = walletBalances.find((b) => b.currency === currency);
-    if (!balance) return 0;
+  const getUsdBalance = useCallback(
+    (currency: string) => {
+      const balance = walletBalances.find((b) => b.currency === currency);
+      if (!balance) return 0;
 
-    const rate = getRate(currency);
-    return balance.amount * rate;
-  };
+      const rate = rates[currency]?.rate;
+      return balance.amount * rate;
+    },
+    [walletBalances, rates],
+  );
 
-  // 计算总USD价值
-  const getTotalUsdBalance = () => {
-    return walletBalances.reduce((total, balance) => {
+  const totalBalance = useCreation(() => {
+    const total = walletBalances.reduce((total, balance) => {
       return total + getUsdBalance(balance.currency);
     }, 0);
-  };
-
-  const totalBalance = getTotalUsdBalance();
+    return toFixed(total)(2);
+  }, [walletBalances, getUsdBalance]);
 
   if (isLoading) {
     return (
@@ -62,8 +64,9 @@ const WalletDashboard: React.FC = () => {
     <div className="flex flex-col flex-1 text-white">
       {/* 顶部余额部分 */}
       <div className="bg-gray-800 p-4 rounded-lg mb-4">
-        <div className="text-xl text-gray-400 mb-1">$</div>
-        <div className="text-4xl font-bold">{totalBalance.toFixed(2)} USD</div>
+        <span className="text-xl text-gray-400 mr-1">$</span>
+        <span className="text-4xl font-bold">{totalBalance}</span>
+        <span className="text-xl text-gray-400 ml-1">USD</span>
 
         {/* 发送和接收按钮 */}
         <div className="flex justify-center space-x-16 mt-6 px-4">

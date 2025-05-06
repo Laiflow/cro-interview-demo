@@ -1,26 +1,12 @@
 import { create } from "zustand";
 import { useSocketWithWorker } from "../../hooks/useSocketWithWorker";
-import { fetchCurrencies, fetchLiveRates } from "../../utils/mockApi";
+import { fetchCurrencies, fetchLiveRates } from "../../services/mockApi";
+import { Currency, CurrencyRate } from "@/types/currency";
 
 // 货币汇率更新事件名称
 const CURRENCY_RATES_EVENT = "currency_rates_update";
 // 货币基本信息更新事件名称
 const CURRENCY_BASIC_INFO_EVENT = "currency_basic_info_update";
-
-// 货币基本信息
-export interface Currency {
-  coin_id: string;
-  name: string;
-  symbol: string;
-  colorful_image_url: string;
-}
-
-// 货币实时价格
-export interface CurrencyRate {
-  currency: string;
-  rate: number;
-  lastUpdated: number;
-}
 
 // 货币Store状态
 export interface CurrencyState {
@@ -64,15 +50,7 @@ export const useCurrencyStore = create<CurrencyState>((set, get) => ({
 
     try {
       // 在真实环境中，这里会调用API
-      const data = await fetchCurrencies();
-
-      // 只保留需要的字段
-      const currencies = data.currencies.map((currency) => ({
-        coin_id: currency.coin_id,
-        name: currency.name,
-        symbol: currency.symbol,
-        colorful_image_url: currency.colorful_image_url,
-      }));
+      const { currencies } = (await fetchCurrencies()) || {};
 
       // 构建currenciesMap，便于快速查找
       const currenciesMap: Record<string, Currency> = {};
@@ -286,49 +264,49 @@ export const initializeMockCurrencyData = () => {
   }, 5000);
 };
 
-// Socket客户端接口
-interface SocketClient {
-  emit: (event: string, data: Currency) => void;
-}
+// // Socket客户端接口
+// interface SocketClient {
+//   emit: (event: string, data: Currency) => void;
+// }
 
-// 模拟推送货币基本信息更新
-export const simulateCurrencyBasicInfoUpdate = (
-  socketClient?: SocketClient,
-) => {
-  // 模拟更新币种名称
-  const mockCurrencyUpdates = [
-    {
-      coin_id: "BTC",
-      name: "Bitcoin (Updated)",
-      symbol: "BTC",
-      colorful_image_url: "https://example.com/bitcoin_updated.png",
-    },
-    {
-      coin_id: "ETH",
-      name: "Ethereum 2.0",
-      symbol: "ETH",
-      colorful_image_url: "https://example.com/ethereum_updated.png",
-    },
-    // 新币种
-    {
-      coin_id: "SOL",
-      name: "Solana",
-      symbol: "SOL",
-      colorful_image_url: "https://example.com/solana.png",
-    },
-  ];
+// // 模拟推送货币基本信息更新
+// export const simulateCurrencyBasicInfoUpdate = (
+//   socketClient?: SocketClient,
+// ) => {
+//   // 模拟更新币种名称
+//   const mockCurrencyUpdates = [
+//     {
+//       coin_id: "BTC",
+//       name: "Bitcoin (Updated)",
+//       symbol: "BTC",
+//       colorful_image_url: "https://example.com/bitcoin_updated.png",
+//     },
+//     {
+//       coin_id: "ETH",
+//       name: "Ethereum 2.0",
+//       symbol: "ETH",
+//       colorful_image_url: "https://example.com/ethereum_updated.png",
+//     },
+//     // 新币种
+//     {
+//       coin_id: "SOL",
+//       name: "Solana",
+//       symbol: "SOL",
+//       colorful_image_url: "https://example.com/solana.png",
+//     },
+//   ];
 
-  // 模拟延迟后推送更新
-  setTimeout(() => {
-    mockCurrencyUpdates.forEach((currency) => {
-      // 如果在真实环境中，这里会通过WebSocket发送消息
-      if (socketClient) {
-        socketClient.emit(CURRENCY_BASIC_INFO_EVENT, currency);
-      } else {
-        // 在没有socket客户端的情况下直接更新store（仅用于测试）
-        const { updateCurrency } = useCurrencyStore.getState();
-        updateCurrency(currency);
-      }
-    });
-  }, 3000);
-};
+//   // 模拟延迟后推送更新
+//   setTimeout(() => {
+//     mockCurrencyUpdates.forEach((currency) => {
+//       // 如果在真实环境中，这里会通过WebSocket发送消息
+//       if (socketClient) {
+//         socketClient.emit(CURRENCY_BASIC_INFO_EVENT, currency);
+//       } else {
+//         // 在没有socket客户端的情况下直接更新store（仅用于测试）
+//         const { updateCurrency } = useCurrencyStore.getState();
+//         updateCurrency(currency);
+//       }
+//     });
+//   }, 3000);
+// };

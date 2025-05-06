@@ -1,4 +1,4 @@
-import React from "react";
+import React, { memo } from "react";
 import { Link, useLocation } from "react-router-dom";
 
 const FooterTabs: React.FC = () => {
@@ -59,4 +59,4 @@ const FooterTabs: React.FC = () => {
   );
 };
 
-export default FooterTabs;
+export default memo(FooterTabs);
