@@ -15,7 +15,8 @@ if (
 }
 
 // 为问题添加更好的错误消息
-Cypress.on("uncaught:exception", (err) => {
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+Cypress.on("uncaught:exception", (_err) => {
   // 返回false防止Cypress因未捕获的异常而失败
   return false;
 });

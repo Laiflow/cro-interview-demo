@@ -1,6 +1,6 @@
 import React from "react";
 import TokenItem from "./TokenItem";
-import { WalletBalance } from "../store/walletStore";
+import { WalletBalance } from "@/types/wallet";
 
 interface TokenListProps {
   tokens: WalletBalance[];

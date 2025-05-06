@@ -1,6 +1,6 @@
 import React from "react";
 import { RouteObject } from "react-router-dom";
-import { MainLayout } from "../pages/Layout";
+import { MainLayout } from "../pages/Main";
 import NotFound from "../pages/NotFound";
 import WalletPage from "../pages/Wallet";
 import DeFiPage from "../pages/DeFi";

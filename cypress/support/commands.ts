@@ -3,6 +3,7 @@
 // 此文件允许向Cypress添加新的自定义命令
 
 declare global {
+  // eslint-disable-next-line @typescript-eslint/no-namespace
   namespace Cypress {
     interface Chainable {
       /**

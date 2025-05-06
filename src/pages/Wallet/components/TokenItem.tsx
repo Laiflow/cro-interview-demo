@@ -1,15 +1,17 @@
-import React from "react";
-import { WalletBalance, useWalletStore } from "../store/walletStore";
+import React, { memo } from "react";
+import { useCurrencyStore } from "../../../store/atom/currency";
+import { WalletBalance } from "../../../types/wallet";
 
 interface TokenItemProps {
   token: WalletBalance;
 }
 
 const TokenItem: React.FC<TokenItemProps> = ({ token }) => {
-  const { getCurrencyDetails, getUsdBalance } = useWalletStore();
+  const { getCurrency, getRate } = useCurrencyStore();
 
-  const currencyInfo = getCurrencyDetails(token.currency);
-  const usdBalance = getUsdBalance(token.currency);
+  const currencyInfo = getCurrency(token.currency);
+  const rate = getRate(token.currency);
+  const usdBalance = token.amount * rate;
 
   if (!currencyInfo) {
     return null; // 如果没有找到币种信息，不显示
@@ -41,4 +43,4 @@ const TokenItem: React.FC<TokenItemProps> = ({ token }) => {
   );
 };
 
-export default TokenItem;
+export default memo(TokenItem);

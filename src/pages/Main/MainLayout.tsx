@@ -1,10 +1,13 @@
 import React from "react";
 import { Outlet } from "react-router-dom";
 import FooterTabs from "./FooterTabs";
+import { useCryptoSocket } from "./useCryptoSocket";
 
 const MainLayout: React.FC = () => {
+  useCryptoSocket();
+
   return (
-    <div className="min-h-screen bg-gray-900">
+    <div className="min-h-screen flex flex-1 flex-col bg-gray-900">
       {/* Logo和头部 */}
       <div className="p-4 bg-gray-900 text-white">
         <div className="flex items-center">
@@ -19,10 +22,7 @@ const MainLayout: React.FC = () => {
         </div>
       </div>
 
-      {/* 主内容区域 */}
-      <div className="pb-16">
-        <Outlet />
-      </div>
+      <Outlet />
 
       {/* 底部导航 */}
       <FooterTabs />
