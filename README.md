@@ -2,20 +2,24 @@
 
 ## 项目简介
 
-这是一个基于React的加密货币钱包仪表盘Demo，提供了以下功能：
+React+Vite 加密货币钱包Demo，提供了以下功能：
+
 - 查看总资产价值（USD）
 - 显示BTC、ETH、CRO等币种的余额和美元价值
-- 通过底部标签导航切换钱包和DeFi功能
 
 ## 技术栈
 
 - React 19.0
 - React Router v7
+- TypeScript 5.8
 - Zustand（状态管理）
-- React Query（数据获取）
+- React Query（数据获取管理）
 - TailwindCSS（样式）
+- Vite（构建工具）
 - Vitest（单元测试）
 - Cypress（E2E测试）
+- decimal.js（精确数值计算）
+- Socket.io（实时数据推送）
 
 ## 项目结构
 
@@ -77,6 +81,7 @@ src/
 ### 路由结构
 
 应用使用嵌套路由结构：
+
 - `/` - 应用根目录，使用主布局
   - `/wallet` - 钱包页面（默认）
   - `/defi` - DeFi页面
@@ -84,6 +89,7 @@ src/
 ### 状态管理
 
 使用Zustand管理钱包相关状态：
+
 - 钱包余额数据
 - 币种信息
 - 汇率数据
@@ -92,6 +98,7 @@ src/
 ### 接口模拟
 
 使用内置的模拟数据实现API：
+
 - 获取钱包余额
 - 获取币种信息
 - 获取实时汇率
@@ -100,7 +107,7 @@ src/
 
 ```bash
 # 安装依赖
-yarn 
+yarn
 
 # 启动开发服务器
 yarn dev
@@ -123,6 +130,7 @@ yarn dist
 ### 单元测试
 
 应用包含以下单元测试：
+
 - TokenItem组件测试
 - TokenList组件测试
 - FooterTabs组件测试
@@ -132,14 +140,16 @@ yarn dist
 ### E2E测试
 
 应用包含以下E2E测试：
+
 - 钱包页面功能测试
 - DeFi页面功能测试
 - 导航功能测试
 
 主要测试以下功能：
+
 - 页面正确渲染和加载
 - 钱包余额和币种列表显示
 - 页面间导航
 - 底部标签栏高亮显示
 
-运行 `yarn test:e2e` 执行所有E2E测试，或者运行 `yarn cy:open` 打开Cypress UI手动运行测试。
+运行 `yarn test:e2e` 执行E2E测试，或者运行 `yarn cy:open` 打开Cypress UI手动运行测试。
