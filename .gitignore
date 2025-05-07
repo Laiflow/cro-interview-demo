@@ -11,6 +11,6 @@ coverage/
 .vscode
 .idea
 .DS_Store
-
+.ini
 web-interview-onchain-coding-test/demo-1.png
 web-interview-onchain-coding-test/README.md

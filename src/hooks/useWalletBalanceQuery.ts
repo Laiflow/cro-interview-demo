@@ -1,9 +1,8 @@
 import { useQuery } from "@tanstack/react-query";
-import { fetchWalletBalance } from "../services/mockApi";
-import { WalletBalance } from "../types/wallet";
 import { COMMON_REFRESH_INTERVAL } from "@/constants";
 import { PersistTimeMap } from "@/config/queryClient";
-
+import { fetchWalletBalance } from "../services/mockApi";
+import { WalletBalance } from "../types/wallet";
 export interface WalletBalanceResponse {
   ok: boolean;
   warning: string;

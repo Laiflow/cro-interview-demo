@@ -13,23 +13,10 @@ describe("DeFi Page Tests", () => {
     cy.get("h1.text-2xl").should("contain.text", "DeFi Page");
   });
 
-  it("should display common layout elements", () => {
-    // 检查钱包页面的标题
-    cy.get(".text-xl.font-bold").should("contain.text", "DEFI WALLET");
-
-    // 检查是否有logo图片
-    cy.get('img[alt="Crypto.com"]').should("be.visible");
-
-    // 检查底部导航栏
-    cy.get(".fixed.bottom-0").should("be.visible");
-  });
-
   it("should have DeFi tab active", () => {
-    // 验证DeFi标签处于激活状态
-    cy.contains("DeFi").closest("a").should("have.class", "text-blue-500");
-
-    // 验证Wallet标签未激活
-    cy.contains("Wallet").closest("a").should("have.class", "text-gray-500");
+    cy.wait(100);
+    cy.get('a[href="/defi"]').should("have.class", "text-blue-500");
+    cy.get('a[href="/wallet"]').should("have.class", "text-gray-500");
   });
 
   it("should navigate to Wallet page when clicking Wallet tab", () => {

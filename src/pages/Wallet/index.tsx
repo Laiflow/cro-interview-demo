@@ -1,42 +1,14 @@
-import React, { useCallback } from "react";
-import { useCurrencyStore } from "../../stores/atom/currency";
-import { useWalletBalanceQuery } from "../../hooks/useWalletBalanceQuery";
+import React from "react";
+import { useWalletBalance } from "@/pages/Wallet/hooks/useWalletBalance";
 import TokenList from "./components/TokenList";
-import { useCreation } from "ahooks";
-import { toFixed } from "@/utils/operation";
+import BalanceHeader from "./components/BalanceHeader";
+import { useClick } from "./hooks/useClick";
 
 const WalletDashboard: React.FC = () => {
-  // 使用React Query获取钱包余额
-  const {
-    data: walletData,
-    isLoading,
-    error,
-    refetch,
-  } = useWalletBalanceQuery();
-  // 从currency store获取汇率信息
-  const { rates } = useCurrencyStore();
+  const { totalBalance, walletBalances, isLoading, error, refetch } =
+    useWalletBalance();
 
-  // 获取所有钱包余额
-  const walletBalances = walletData?.wallet || [];
-
-  // 计算某个货币的USD价值
-  const getUsdBalance = useCallback(
-    (currency: string) => {
-      const balance = walletBalances.find((b) => b.currency === currency);
-      if (!balance) return 0;
-
-      const rate = rates[currency]?.rate;
-      return balance.amount * rate;
-    },
-    [walletBalances, rates],
-  );
-
-  const totalBalance = useCreation(() => {
-    const total = walletBalances.reduce((total, balance) => {
-      return total + getUsdBalance(balance.currency);
-    }, 0);
-    return toFixed(total)(2);
-  }, [walletBalances, getUsdBalance]);
+  const { handleSendClick, handleReceiveClick } = useClick();
 
   if (isLoading) {
     return (
@@ -62,57 +34,14 @@ const WalletDashboard: React.FC = () => {
 
   return (
     <div className="flex flex-col flex-1 text-white">
-      {/* 顶部余额部分 */}
-      <div className="bg-gray-800 p-4 rounded-lg mb-4">
-        <span className="text-xl text-gray-400 mr-1">$</span>
-        <span className="text-4xl font-bold">{totalBalance}</span>
-        <span className="text-xl text-gray-400 ml-1">USD</span>
-
-        {/* 发送和接收按钮 */}
-        <div className="flex justify-center space-x-16 mt-6 px-4">
-          <div className="flex flex-col items-center">
-            <button className="w-16 h-16 bg-blue-500 rounded-full flex items-center justify-center">
-              <svg
-                className="w-8 h-8 text-white"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth="2"
-                  d="M14 5l7 7m0 0l-7 7m7-7H3"
-                ></path>
-              </svg>
-            </button>
-            <span className="mt-2 text-white">Send</span>
-          </div>
-          <div className="flex flex-col items-center">
-            <button className="w-16 h-16 bg-blue-500 rounded-full flex items-center justify-center">
-              <svg
-                className="w-8 h-8 text-white"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth="2"
-                  d="M10 19l-7-7m0 0l7-7m-7 7h18"
-                ></path>
-              </svg>
-            </button>
-            <span className="mt-2 text-white">Receive</span>
-          </div>
-        </div>
-      </div>
+      <BalanceHeader
+        totalBalance={totalBalance}
+        onSendClick={handleSendClick}
+        onReceiveClick={handleReceiveClick}
+      />
 
       {/* 币种列表 */}
-      <div className="flex-1 bg-white rounded-2xl overflow-hidden">
+      <div className="flex-1 bg-[#f4fafe]  rounded-2xl overflow-hidden">
         <TokenList tokens={walletBalances} />
       </div>
     </div>

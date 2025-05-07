@@ -16,7 +16,7 @@ const TokenList: React.FC<TokenListProps> = ({ tokens }) => {
   }
 
   return (
-    <div className="divide-y divide-gray-200">
+    <div className="divide-y divide-gray-200 p-4 pt-6">
       {tokens.map((token) => (
         <TokenItem key={token.currency} token={token} />
       ))}

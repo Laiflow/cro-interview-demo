@@ -1,4 +1,4 @@
-import { Manager, Socket, io } from "socket.io-client";
+import { Socket, io } from "socket.io-client";
 
 export interface SocketOptions {
   /**
@@ -249,7 +249,7 @@ export class SocketClient {
  */
 export const createSocketClient = (
   socketUrl: string,
-  options?: SocketOptions,
+  options?: SocketOptions
 ): SocketClient => {
   return new SocketClient(socketUrl, options);
 };

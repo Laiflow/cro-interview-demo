@@ -19,7 +19,7 @@ const TokenItem: React.FC<TokenItemProps> = ({ token }) => {
   }
 
   return (
-    <div className="flex items-center justify-between p-4 hover:bg-gray-50">
+    <div className="flex items-center justify-between p-4 rounded-xl mb-2 bg-white hover:bg-gray-50">
       <div className="flex items-center">
         <div className="w-10 h-10 mr-4">
           <img
