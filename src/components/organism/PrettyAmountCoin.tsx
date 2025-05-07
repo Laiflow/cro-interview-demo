@@ -10,14 +10,14 @@ const PrettyAmountCoin = ({
   showSymbol = true,
   precision,
 }: {
-  code?: string;
+  code: string;
   amount: string | number | undefined;
   showSymbol?: boolean;
   precision?: number;
 }) => {
   const { getCurrency } = useCurrencyStore();
 
-  const currencyInfo = code ? getCurrency(code) : ({} as unknown as any);
+  const currencyInfo = getCurrency(code) || ({} as unknown as any);
   const { display_decimal = 18, symbol } = currencyInfo;
 
   const showText = useMemo(() => {
@@ -31,7 +31,7 @@ const PrettyAmountCoin = ({
       },
     });
 
-    return `${formatAmount}${showSymbol ? ` ${symbol}` : ""}`;
+    return `${formatAmount}${showSymbol && symbol ? ` ${symbol}` : ""}`;
   }, [amount, display_decimal]);
 
   return <>{showText}</>;

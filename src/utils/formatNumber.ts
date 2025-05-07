@@ -4,6 +4,7 @@ import Decimal from "decimal.js";
 
 interface FormatNumberOptions {
   style?: "decimal" | "currency" | "percent" | "unit";
+  currency?: string;
   maximumFractionDigits?: number;
   minimumFractionDigits?: number;
 }
@@ -20,7 +21,8 @@ const DEFAULT_OPTIONS = {
  * @param {number} params.value - 需要格式化的数字
  * @param {string} [params.lang="en_US"] - 语言/地区代码（例如："en_US"、"zh_CN"）
  * @param {FormatNumberOptions} [params.options] - 格式化选项
- * @param {("decimal"|"percent")} [params.options.style="decimal"] - 格式化样式，可选"decimal"（十进制）或"percent"（百分比）
+ * @param {("decimal"|"currency"|"percent"|"unit")} [params.options.style="decimal"] - 格式化样式
+ * @param {string} [params.options.currency] - 货币代码（当style为"currency"时必需，例如："USD"、"EUR"、"CNY"）
  * @param {number} [params.options.maximumFractionDigits] - 最大小数位数
  * @param {number} [params.options.minimumFractionDigits] - 最小小数位数
  * @returns {string} 格式化后的数字字符串
