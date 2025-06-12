@@ -1,21 +1,20 @@
-import React from "react";
-import { useWalletBalance } from "@/pages/Wallet/hooks/useWalletBalance";
-import TokenList from "./components/TokenList";
-import BalanceHeader from "./components/BalanceHeader";
-import { useClick } from "./hooks/useClick";
+import React from 'react'
+import { useWalletBalance } from '@/pages/Wallet/hooks/useWalletBalance'
+import TokenList from './components/TokenList'
+import BalanceHeader from './components/BalanceHeader'
+import { useClick } from './hooks/useClick'
 
 const WalletDashboard: React.FC = () => {
-  const { totalBalance, walletBalances, isLoading, error, refetch } =
-    useWalletBalance();
+  const { totalBalance, walletBalances, isLoading, error, refetch } = useWalletBalance()
 
-  const { handleSendClick, handleReceiveClick } = useClick();
+  const { handleSendClick, handleReceiveClick } = useClick()
 
   if (isLoading) {
     return (
       <div className="flex items-center justify-center p-10 text-white">
         <p>Loading wallet data...</p>
       </div>
-    );
+    )
   }
 
   if (error) {
@@ -29,7 +28,7 @@ const WalletDashboard: React.FC = () => {
           Retry
         </button>
       </div>
-    );
+    )
   }
 
   return (
@@ -45,7 +44,7 @@ const WalletDashboard: React.FC = () => {
         <TokenList tokens={walletBalances} />
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default WalletDashboard;
+export default WalletDashboard

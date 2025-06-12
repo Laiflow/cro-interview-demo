@@ -1,6 +1,6 @@
-import { useEffect, useRef, useState, useCallback } from "react";
-import { useWebWorker } from "./useWebWorker";
-import { SocketOptions } from "../utils/socket";
+import { useEffect, useRef, useState, useCallback } from 'react'
+import { useWebWorker } from './useWebWorker'
+import { SocketOptions } from '../utils/socket'
 
 // Socket.IO Web Worker 内联代码
 const SOCKET_WORKER_CODE = `
@@ -207,14 +207,14 @@ const SOCKET_WORKER_CODE = `
         });
     }
   });
-`;
+`
 
 // 扩展Socket选项，添加URL
 interface SocketWorkerOptions extends SocketOptions {
   /**
    * webSocket 地址
    */
-  url: string;
+  url: string
 }
 
 // 钩子返回值
@@ -222,39 +222,36 @@ interface UseSocketWithWorkerResult {
   /**
    * 是否已连接
    */
-  isConnected: boolean;
+  isConnected: boolean
   /**
    * 是否正在加载
    */
-  isLoading: boolean;
+  isLoading: boolean
   /**
    * 连接错误
    */
-  error: Error | null;
+  error: Error | null
   /**
    * 订阅事件
    * @param event 事件名
    * @param callback 回调函数
    * @returns 解除订阅函数
    */
-  subscribe: <T = any>(
-    event: string,
-    callback: (data: T) => void,
-  ) => () => void;
+  subscribe: <T = any>(event: string, callback: (data: T) => void) => () => void
   /**
    * 发送消息
    * @param event 事件名
    * @param data 消息数据
    */
-  emit: <T = any>(event: string, data: T) => void;
+  emit: <T = any>(event: string, data: T) => void
   /**
    * 断开连接
    */
-  disconnect: () => void;
+  disconnect: () => void
   /**
    * 连接
    */
-  connect: () => void;
+  connect: () => void
 }
 
 /**
@@ -265,16 +262,14 @@ interface UseSocketWithWorkerResult {
  */
 export const useSocketWithWorker = (
   socketUrl: string,
-  options: Omit<SocketWorkerOptions, "url"> = {},
+  options: Omit<SocketWorkerOptions, 'url'> = {}
 ): UseSocketWithWorkerResult => {
-  const [isConnected, setIsConnected] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState<Error | null>(null);
+  const [isConnected, setIsConnected] = useState(false)
+  const [isLoading, setIsLoading] = useState(false)
+  const [error, setError] = useState<Error | null>(null)
 
   // 保存事件监听器
-  const eventListeners = useRef<Map<string, Set<(data: any) => void>>>(
-    new Map(),
-  );
+  const eventListeners = useRef<Map<string, Set<(data: any) => void>>>(new Map())
 
   // 创建 WebWorker
   const {
@@ -283,63 +278,63 @@ export const useSocketWithWorker = (
     isRunning,
   } = useWebWorker<unknown, unknown>(SOCKET_WORKER_CODE, {
     terminateOnUnmount: true,
-  });
+  })
 
   // 统一处理来自Worker的消息
   const handleWorkerMessage = useCallback((message: any) => {
-    const { type, payload } = message;
+    const { type, payload } = message
 
     switch (type) {
-      case "SOCKET_OPEN":
-        setIsConnected(true);
-        setIsLoading(false);
-        setError(null);
-        break;
+      case 'SOCKET_OPEN':
+        setIsConnected(true)
+        setIsLoading(false)
+        setError(null)
+        break
 
-      case "SOCKET_CLOSE":
-        setIsConnected(false);
-        break;
+      case 'SOCKET_CLOSE':
+        setIsConnected(false)
+        break
 
-      case "SOCKET_ERROR":
-        setError(new Error(payload.message));
-        setIsLoading(false);
-        break;
+      case 'SOCKET_ERROR':
+        setError(new Error(payload.message))
+        setIsLoading(false)
+        break
 
-      case "SOCKET_MESSAGE":
+      case 'SOCKET_MESSAGE':
         // 触发注册的事件监听器
-        const { event, data } = payload;
-        const listeners = eventListeners.current.get(event);
+        const { event, data } = payload
+        const listeners = eventListeners.current.get(event)
 
         if (listeners) {
           listeners.forEach((callback) => {
             try {
-              callback(data);
+              callback(data)
             } catch (err) {
-              console.error(`Error in event listener for ${event}:`, err);
+              console.error(`Error in event listener for ${event}:`, err)
             }
-          });
+          })
         }
-        break;
+        break
 
-      case "SOCKET_CLOSED":
-        setIsConnected(false);
-        setIsLoading(false);
-        break;
+      case 'SOCKET_CLOSED':
+        setIsConnected(false)
+        setIsLoading(false)
+        break
 
-      case "WORKER_ERROR":
-        setError(new Error(payload.message));
-        setIsLoading(false);
-        break;
+      case 'WORKER_ERROR':
+        setError(new Error(payload.message))
+        setIsLoading(false)
+        break
     }
-  }, []);
+  }, [])
 
   // 连接Socket
   const connect = useCallback(() => {
-    setIsLoading(true);
-    setError(null);
+    setIsLoading(true)
+    setError(null)
 
     postMessage({
-      action: "CONNECT",
+      action: 'CONNECT',
       payload: {
         url: socketUrl,
         ...options,
@@ -347,102 +342,102 @@ export const useSocketWithWorker = (
     })
       .then(handleWorkerMessage)
       .catch((err) => {
-        setError(err);
-        setIsLoading(false);
-      });
-  }, [socketUrl, options, postMessage, handleWorkerMessage]);
+        setError(err)
+        setIsLoading(false)
+      })
+  }, [socketUrl, options, postMessage, handleWorkerMessage])
 
   // 断开连接
   const disconnect = useCallback(() => {
     postMessage({
-      action: "DISCONNECT",
+      action: 'DISCONNECT',
       payload: {},
     })
       .then(handleWorkerMessage)
       .catch((err) => {
-        setError(err);
-      });
-  }, [postMessage, handleWorkerMessage]);
+        setError(err)
+      })
+  }, [postMessage, handleWorkerMessage])
 
   // 订阅事件
   const subscribe = useCallback(
     <T = any>(event: string, callback: (data: T) => void) => {
       // 添加到本地监听器
       if (!eventListeners.current.has(event)) {
-        eventListeners.current.set(event, new Set());
+        eventListeners.current.set(event, new Set())
       }
 
-      const listeners = eventListeners.current.get(event)!;
-      listeners.add(callback as any);
+      const listeners = eventListeners.current.get(event)!
+      listeners.add(callback as any)
 
       // 告诉Worker订阅此事件
       postMessage({
-        action: "SUBSCRIBE",
+        action: 'SUBSCRIBE',
         payload: { event },
       })
         .then(handleWorkerMessage)
         .catch((err) => {
-          setError(err);
-        });
+          setError(err)
+        })
 
       // 返回取消订阅函数
       return () => {
-        const listeners = eventListeners.current.get(event);
+        const listeners = eventListeners.current.get(event)
         if (listeners) {
-          listeners.delete(callback as any);
+          listeners.delete(callback as any)
 
           // 如果没有监听器了，告诉Worker取消订阅
           if (listeners.size === 0) {
-            eventListeners.current.delete(event);
+            eventListeners.current.delete(event)
 
             postMessage({
-              action: "UNSUBSCRIBE",
+              action: 'UNSUBSCRIBE',
               payload: { event },
             })
               .then(handleWorkerMessage)
               .catch((err) => {
-                setError(err);
-              });
+                setError(err)
+              })
           }
         }
-      };
+      }
     },
-    [postMessage, handleWorkerMessage],
-  );
+    [postMessage, handleWorkerMessage]
+  )
 
   // 发送消息
   const emit = useCallback(
     <T = any>(event: string, data: T) => {
       postMessage({
-        action: "EMIT",
+        action: 'EMIT',
         payload: { event, data },
       })
         .then(handleWorkerMessage)
         .catch((err) => {
-          setError(err);
-        });
+          setError(err)
+        })
     },
-    [postMessage, handleWorkerMessage],
-  );
+    [postMessage, handleWorkerMessage]
+  )
 
   // 组件挂载时连接，除非设置了manual
   useEffect(() => {
     if (!options.manual) {
-      connect();
+      connect()
     }
 
     return () => {
-      disconnect();
-    };
-  }, [connect, disconnect, options.manual]);
+      disconnect()
+    }
+  }, [connect, disconnect, options.manual])
 
   // 处理Worker错误
   useEffect(() => {
     if (workerError) {
-      setError(workerError);
-      setIsLoading(false);
+      setError(workerError)
+      setIsLoading(false)
     }
-  }, [workerError]);
+  }, [workerError])
 
   return {
     isConnected,
@@ -452,5 +447,5 @@ export const useSocketWithWorker = (
     emit,
     disconnect,
     connect,
-  };
-};
+  }
+}

@@ -1,22 +1,22 @@
-import React, { memo } from "react";
-import { Link, useLocation } from "react-router-dom";
+import React, { memo } from 'react'
+import { Link, useLocation } from 'react-router-dom'
 
 const FooterTabs: React.FC = () => {
-  const location = useLocation();
-  const currentPath = location.pathname;
+  const location = useLocation()
+  const currentPath = location.pathname
 
   const isActive = (path: string) => {
-    if (path === "/wallet") {
-      return currentPath === "/wallet" || currentPath === "/";
+    if (path === '/wallet') {
+      return currentPath === '/wallet' || currentPath === '/'
     }
-    return currentPath.includes(path);
-  };
+    return currentPath.includes(path)
+  }
 
   return (
     <div className="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 flex items-center justify-around h-16">
       <Link
         to="/wallet"
-        className={`flex flex-col items-center justify-center w-full h-full ${isActive("/wallet") ? "text-blue-500" : "text-gray-500"}`}
+        className={`flex flex-col items-center justify-center w-full h-full ${isActive('/wallet') ? 'text-blue-500' : 'text-gray-500'}`}
       >
         <svg
           className="w-6 h-6"
@@ -37,7 +37,7 @@ const FooterTabs: React.FC = () => {
 
       <Link
         to="/defi"
-        className={`flex flex-col items-center justify-center w-full h-full ${isActive("/defi") ? "text-blue-500" : "text-gray-500"}`}
+        className={`flex flex-col items-center justify-center w-full h-full ${isActive('/defi') ? 'text-blue-500' : 'text-gray-500'}`}
       >
         <svg
           className="w-6 h-6"
@@ -56,7 +56,7 @@ const FooterTabs: React.FC = () => {
         <span className="text-xs mt-1">DeFi</span>
       </Link>
     </div>
-  );
-};
+  )
+}
 
-export default memo(FooterTabs);
+export default memo(FooterTabs)

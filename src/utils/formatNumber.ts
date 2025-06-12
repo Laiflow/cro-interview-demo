@@ -1,19 +1,19 @@
-import Decimal from "decimal.js";
+import Decimal from 'decimal.js'
 
 // 允许使用 any 的注释
 
 interface FormatNumberOptions {
-  style?: "decimal" | "currency" | "percent" | "unit";
-  currency?: string;
-  maximumFractionDigits?: number;
-  minimumFractionDigits?: number;
+  style?: 'decimal' | 'currency' | 'percent' | 'unit'
+  currency?: string
+  maximumFractionDigits?: number
+  minimumFractionDigits?: number
 }
 
 const DEFAULT_OPTIONS = {
-  style: "decimal" as const,
+  style: 'decimal' as const,
   maximumFractionDigits: 18,
   minimumFractionDigits: 0,
-};
+}
 
 /**
  * 使用 Intl.NumberFormat 格式化数字
@@ -29,18 +29,18 @@ const DEFAULT_OPTIONS = {
  */
 export const formatNumber = (
   params: {
-    value: number;
-    lang?: string;
-    options?: FormatNumberOptions;
-    round?: Decimal.Rounding;
-  } = { value: 0 },
+    value: number
+    lang?: string
+    options?: FormatNumberOptions
+    round?: Decimal.Rounding
+  } = { value: 0 }
 ): string => {
-  const { options, lang, value } = params;
+  const { options, lang, value } = params
 
   const formatter = new Intl.NumberFormat(lang, {
     ...DEFAULT_OPTIONS,
     ...(options || {}),
-  });
+  })
 
-  return formatter.format(value);
-};
+  return formatter.format(value)
+}

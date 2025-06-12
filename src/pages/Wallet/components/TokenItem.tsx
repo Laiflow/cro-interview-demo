@@ -1,21 +1,20 @@
-import React, { memo } from "react";
-import { useCurrencyStore } from "../../../stores/atom/currency";
-import { WalletBalance } from "../../../types/wallet";
-import CoinCodeToName from "@/components/organism/CoinCodeToName";
-import PrettyAmountCoin from "@/components/organism/PrettyAmountCoin";
-import PrettyPrice from "@/components/organism/PrettyPrice";
+import React, { memo } from 'react'
+import { useCurrencyStore } from '../../../stores/atom/currency'
+import { WalletBalance } from '../../../types/wallet'
+import CoinCodeToName from '@/components/organism/CoinCodeToName'
+import PrettyAmountCoin from '@/components/organism/PrettyAmountCoin'
+import PrettyPrice from '@/components/organism/PrettyPrice'
+import { useShallow } from 'zustand/shallow'
 
 interface TokenItemProps {
-  token: WalletBalance;
+  token: WalletBalance
 }
 
 const TokenItem: React.FC<TokenItemProps> = ({ token }) => {
-  const { getCurrency } = useCurrencyStore();
-
-  const currencyInfo = getCurrency(token.currency);
+  const currencyInfo = useCurrencyStore(useShallow((state) => state.getCurrency(token.currency)))
 
   if (!currencyInfo) {
-    return null; // 如果没有找到币种信息，不显示
+    return null // 如果没有找到币种信息，不显示
   }
 
   return (
@@ -44,7 +43,7 @@ const TokenItem: React.FC<TokenItemProps> = ({ token }) => {
         </div>
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default memo(TokenItem);
+export default memo(TokenItem)

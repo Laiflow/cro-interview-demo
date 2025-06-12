@@ -1,10 +1,10 @@
-import { useRef, useState, useEffect, useCallback } from "react";
+import { useRef, useState, useEffect, useCallback } from 'react'
 
 export interface WebWorkerOptions {
   /**
    * 是否在组件卸载时终止 Worker
    */
-  terminateOnUnmount?: boolean;
+  terminateOnUnmount?: boolean
 }
 
 /**
@@ -15,120 +15,120 @@ export interface WebWorkerOptions {
  */
 export const useWebWorker = <TData = unknown, TResult = unknown>(
   workerFunction: string | (() => void) | URL,
-  options: WebWorkerOptions = {},
+  options: WebWorkerOptions = {}
 ) => {
-  const workerRef = useRef<Worker | null>(null);
-  const [error, setError] = useState<Error | null>(null);
-  const [isRunning, setIsRunning] = useState(false);
+  const workerRef = useRef<Worker | null>(null)
+  const [error, setError] = useState<Error | null>(null)
+  const [isRunning, setIsRunning] = useState(false)
 
-  const { terminateOnUnmount = true } = options;
+  const { terminateOnUnmount = true } = options
 
   // 创建 Worker
   const createWorker = useCallback(() => {
     try {
       if (workerRef.current) {
-        return;
+        return
       }
 
       // 如果是函数，需要转换为 URL
-      if (typeof workerFunction === "function") {
-        const fnString = `(${workerFunction.toString()})()`;
-        const blob = new Blob([fnString], { type: "application/javascript" });
-        workerRef.current = new Worker(URL.createObjectURL(blob));
+      if (typeof workerFunction === 'function') {
+        const fnString = `(${workerFunction.toString()})()`
+        const blob = new Blob([fnString], { type: 'application/javascript' })
+        workerRef.current = new Worker(URL.createObjectURL(blob))
       }
       // 如果是字符串
-      else if (typeof workerFunction === "string") {
+      else if (typeof workerFunction === 'string') {
         // 检查是否是内联代码还是URL
         if (
-          workerFunction.startsWith("http") ||
-          workerFunction.startsWith("/") ||
-          workerFunction.startsWith("./")
+          workerFunction.startsWith('http') ||
+          workerFunction.startsWith('/') ||
+          workerFunction.startsWith('./')
         ) {
           // 作为URL处理
-          workerRef.current = new Worker(workerFunction);
+          workerRef.current = new Worker(workerFunction)
         } else {
           // 作为内联代码处理
           const blob = new Blob([workerFunction], {
-            type: "application/javascript",
-          });
-          workerRef.current = new Worker(URL.createObjectURL(blob));
+            type: 'application/javascript',
+          })
+          workerRef.current = new Worker(URL.createObjectURL(blob))
         }
       }
       // 如果是URL对象
       else if (workerFunction instanceof URL) {
-        workerRef.current = new Worker(workerFunction);
+        workerRef.current = new Worker(workerFunction)
       }
 
       // 清除错误
-      setError(null);
+      setError(null)
     } catch (err) {
-      setError(err instanceof Error ? err : new Error(String(err)));
+      setError(err instanceof Error ? err : new Error(String(err)))
     }
-  }, [workerFunction]);
+  }, [workerFunction])
 
   // 终止 Worker
   const terminateWorker = useCallback(() => {
     if (workerRef.current) {
-      workerRef.current.terminate();
-      workerRef.current = null;
-      setIsRunning(false);
+      workerRef.current.terminate()
+      workerRef.current = null
+      setIsRunning(false)
     }
-  }, []);
+  }, [])
 
   // 发送消息给 Worker，并返回Promise
   const postMessage = useCallback(
     (data: TData): Promise<TResult> => {
       return new Promise((resolve, reject) => {
         if (!workerRef.current) {
-          createWorker();
+          createWorker()
         }
 
         if (!workerRef.current) {
-          reject(new Error("Failed to create Worker"));
-          return;
+          reject(new Error('Failed to create Worker'))
+          return
         }
 
-        setIsRunning(true);
+        setIsRunning(true)
 
         // 创建单次消息处理程序
         const messageHandler = (e: MessageEvent) => {
-          workerRef.current?.removeEventListener("message", messageHandler);
-          workerRef.current?.removeEventListener("error", errorHandler);
-          setIsRunning(false);
-          resolve(e.data as TResult);
-        };
+          workerRef.current?.removeEventListener('message', messageHandler)
+          workerRef.current?.removeEventListener('error', errorHandler)
+          setIsRunning(false)
+          resolve(e.data as TResult)
+        }
 
         // 创建单次错误处理程序
         const errorHandler = (e: ErrorEvent) => {
-          workerRef.current?.removeEventListener("message", messageHandler);
-          workerRef.current?.removeEventListener("error", errorHandler);
-          setIsRunning(false);
-          const error = new Error(e.message);
-          setError(error);
-          reject(error);
-        };
+          workerRef.current?.removeEventListener('message', messageHandler)
+          workerRef.current?.removeEventListener('error', errorHandler)
+          setIsRunning(false)
+          const error = new Error(e.message)
+          setError(error)
+          reject(error)
+        }
 
         // 添加事件处理程序
-        workerRef.current.addEventListener("message", messageHandler);
-        workerRef.current.addEventListener("error", errorHandler);
+        workerRef.current.addEventListener('message', messageHandler)
+        workerRef.current.addEventListener('error', errorHandler)
 
         // 发送消息
-        workerRef.current.postMessage(data);
-      });
+        workerRef.current.postMessage(data)
+      })
     },
-    [createWorker],
-  );
+    [createWorker]
+  )
 
   // 组件挂载时创建 Worker，卸载时终止 Worker
   useEffect(() => {
-    createWorker();
+    createWorker()
 
     return () => {
       if (terminateOnUnmount) {
-        terminateWorker();
+        terminateWorker()
       }
-    };
-  }, [createWorker, terminateOnUnmount, terminateWorker]);
+    }
+  }, [createWorker, terminateOnUnmount, terminateWorker])
 
   return {
     postMessage,
@@ -136,5 +136,5 @@ export const useWebWorker = <TData = unknown, TResult = unknown>(
     isRunning,
     error,
     worker: workerRef.current,
-  };
-};
+  }
+}

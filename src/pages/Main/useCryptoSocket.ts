@@ -1,8 +1,6 @@
-import { useEffect } from "react";
-import {
-  useCurrencyStore,
-  initializeMockCurrencyData,
-} from "../../stores/atom/currency";
+import { useEffect } from 'react'
+import { useCurrencyStore } from '@/stores/atom/currency'
+import { initializeMockCurrencyData } from './presenter'
 
 /**
  * 使用加密货币Socket数据
@@ -16,7 +14,7 @@ export const useCryptoSocket = () => {
     error,
     socketConnected,
     // subscribeToCurrencyUpdates // ws订阅币服数据
-  } = useCurrencyStore();
+  } = useCurrencyStore()
 
   // 初始化并订阅更新
   useEffect(() => {
@@ -27,18 +25,18 @@ export const useCryptoSocket = () => {
     // 在演示环境中，我们使用模拟数据
     if (currencies.length === 0) {
       // 只在初始化时执行一次
-      initializeMockCurrencyData();
+      initializeMockCurrencyData()
     }
 
     // 清理函数
     return () => {
       // 在实际环境中取消订阅: unsubscribe();
-    };
-  }, [currencies.length]);
+    }
+  }, [currencies.length])
 
   return {
     isLoading,
     error,
     socketConnected,
-  };
-};
+  }
+}

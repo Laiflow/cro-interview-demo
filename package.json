@@ -16,7 +16,8 @@
     "lint-ts": "tsc --noemit",
     "cy:open": "cypress open",
     "cy:run": "cypress run",
-    "test:e2e": "start-server-and-test dev http://localhost:5173 cy:run"
+    "test:e2e": "start-server-and-test dev http://localhost:5173 cy:run",
+    "format": "prettier --write \"src/**/*.{ts,tsx}\""
   },
   "devDependencies": {
     "@commitlint/cli": "^17.6.1",

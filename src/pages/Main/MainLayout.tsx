@@ -1,13 +1,13 @@
-import React, { memo } from "react";
-import { Outlet } from "react-router-dom";
-import IcScan from "@/assets/ic-wallet-scan.svg?react";
-import IcSetting from "@/assets/ic-wallet-setting.svg?react";
+import React, { memo } from 'react'
+import { Outlet } from 'react-router-dom'
+import IcScan from '@/assets/ic-wallet-scan.svg?react'
+import IcSetting from '@/assets/ic-wallet-setting.svg?react'
 
-import FooterTabs from "./FooterTabs";
-import { useCryptoSocket } from "./useCryptoSocket";
+import FooterTabs from './FooterTabs'
+import { useCryptoSocket } from './useCryptoSocket'
 
 const MainLayout: React.FC = () => {
-  useCryptoSocket();
+  useCryptoSocket()
 
   return (
     <div className="min-h-screen flex flex-1 flex-col bg-[#0a1e3d]">
@@ -21,7 +21,7 @@ const MainLayout: React.FC = () => {
       {/* 底部导航 */}
       <FooterTabs />
     </div>
-  );
-};
+  )
+}
 
-export default memo(MainLayout);
+export default memo(MainLayout)

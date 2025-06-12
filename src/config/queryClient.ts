@@ -1,19 +1,19 @@
-import { QueryClient } from "@tanstack/react-query";
+import { QueryClient } from '@tanstack/react-query'
 
 export const PersistTimeMap = {
   disabled: 0, // 禁用缓存
   halfDay: 12 * 60 * 60 * 1000, // 12小时
   oneDay: 24 * 60 * 60 * 1000, //24小时
   oneWeek: 7 * 24 * 60 * 60 * 1000, // 7天
-  maximum: 2147483647, // 24.8天 32 位整数最大值
-};
+  maximum: 2147483647, // 24.8天  maximum 32 位整数最大值
+}
 
 export const StaleTimeMap = {
   /**  禁用数据新鲜有效时长 默认发起新请求 */
   disabled: 0,
   /** 预加载场景 3 秒页面载入时长 */
   preload: 3 * 1000,
-};
+}
 
 // 创建 QueryClient 并配置全局选项
 export const queryClient = new QueryClient({
@@ -28,4 +28,4 @@ export const queryClient = new QueryClient({
       refetchOnMount: true,
     },
   },
-});
+})

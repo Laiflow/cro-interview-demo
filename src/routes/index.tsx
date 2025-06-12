@@ -1,14 +1,14 @@
-import React from "react";
-import { RouteObject } from "react-router-dom";
-import { MainLayout } from "../pages/Main";
-import NotFound from "../pages/NotFound";
-import WalletPage from "../pages/Wallet";
-import DeFiPage from "../pages/DeFi";
+import React from 'react'
+import { RouteObject } from 'react-router-dom'
+import { MainLayout } from '../pages/Main'
+import NotFound from '../pages/NotFound'
+import WalletPage from '../pages/Wallet'
+import DeFiPage from '../pages/DeFi'
 
 // 路由配置
 export const routesConfig: RouteObject[] = [
   {
-    path: "/",
+    path: '/',
     element: <MainLayout />,
     children: [
       {
@@ -16,17 +16,17 @@ export const routesConfig: RouteObject[] = [
         element: <WalletPage />,
       },
       {
-        path: "wallet",
+        path: 'wallet',
         element: <WalletPage />,
       },
       {
-        path: "defi",
+        path: 'defi',
         element: <DeFiPage />,
       },
     ],
   },
   {
-    path: "*",
+    path: '*',
     element: <NotFound />,
   },
-];
+]

@@ -1,18 +1,14 @@
-import React from "react";
-import TokenItem from "./TokenItem";
-import { WalletBalance } from "@/types/wallet";
+import React from 'react'
+import TokenItem from './TokenItem'
+import { WalletBalance } from '@/types/wallet'
 
 interface TokenListProps {
-  tokens: WalletBalance[];
+  tokens: WalletBalance[]
 }
 
 const TokenList: React.FC<TokenListProps> = ({ tokens }) => {
   if (!tokens || tokens.length === 0) {
-    return (
-      <div className="p-4 text-center text-gray-500">
-        No tokens found in your wallet.
-      </div>
-    );
+    return <div className="p-4 text-center text-gray-500">No tokens found in your wallet.</div>
   }
 
   return (
@@ -21,7 +17,7 @@ const TokenList: React.FC<TokenListProps> = ({ tokens }) => {
         <TokenItem key={token.currency} token={token} />
       ))}
     </div>
-  );
-};
+  )
+}
 
-export default TokenList;
+export default TokenList

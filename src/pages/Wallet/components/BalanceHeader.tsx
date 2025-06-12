@@ -1,12 +1,12 @@
-import React from "react";
-import LeftArrow from "@/assets/ic-arrow-left.svg?react";
-import RightArrow from "@/assets/ic-arrow-right.svg?react";
-import IcLogo from "@/assets/ic-logo.svg?react";
+import React from 'react'
+import LeftArrow from '@/assets/ic-arrow-left.svg?react'
+import RightArrow from '@/assets/ic-arrow-right.svg?react'
+import IcLogo from '@/assets/ic-logo.svg?react'
 
 interface BalanceHeaderProps {
-  totalBalance: string;
-  onSendClick?: () => void;
-  onReceiveClick?: () => void;
+  totalBalance: string
+  onSendClick?: () => void
+  onReceiveClick?: () => void
 }
 
 const BalanceHeader: React.FC<BalanceHeaderProps> = ({
@@ -53,7 +53,7 @@ const BalanceHeader: React.FC<BalanceHeaderProps> = ({
         </div>
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default BalanceHeader;
+export default BalanceHeader
