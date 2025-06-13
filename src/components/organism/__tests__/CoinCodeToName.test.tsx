@@ -16,17 +16,15 @@ describe('CoinCodeToName', () => {
     ETH: { name: 'Ethereum', code: 'ETH' },
   }
 
-  // Setup mock implementation
-  const mockGetCurrency = vi.fn(
-    (code: string) => mockCurrencyData[code as keyof typeof mockCurrencyData]
-  )
-
   beforeEach(() => {
     // Reset all mocks before each test
     vi.clearAllMocks()
     // Setup default mock implementation
-    ;(useCurrencyStore as any).mockReturnValue({
-      getCurrency: mockGetCurrency,
+    ;(useCurrencyStore as any).mockImplementation((selector) => {
+      const state = {
+        getCurrency: (code: string) => mockCurrencyData[code as keyof typeof mockCurrencyData],
+      }
+      return selector(state)
     })
   })
 
@@ -35,7 +33,6 @@ describe('CoinCodeToName', () => {
 
     const element = screen.getByText('Bitcoin')
     expect(element).toBeDefined()
-    expect(mockGetCurrency).toHaveBeenCalledWith('BTC')
   })
 
   it('should display currency code when currency does not exist', () => {
@@ -43,7 +40,6 @@ describe('CoinCodeToName', () => {
 
     const element = screen.getByText('UNKNOWN')
     expect(element).toBeDefined()
-    expect(mockGetCurrency).toHaveBeenCalledWith('UNKNOWN')
   })
 
   it('should handle empty coin code', () => {
@@ -58,6 +54,5 @@ describe('CoinCodeToName', () => {
 
     const element = screen.getByText('Ethereum')
     expect(element).toBeDefined()
-    expect(mockGetCurrency).toHaveBeenCalledWith('ETH')
   })
 })

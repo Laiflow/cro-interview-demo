@@ -18,7 +18,7 @@ const MainLayout: React.FC = () => {
 
       <Outlet />
 
-      {/* 底部导航 */}
+      {/* Bottom navigation */}
       <FooterTabs />
     </div>
   )

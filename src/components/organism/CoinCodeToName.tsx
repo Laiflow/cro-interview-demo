@@ -9,7 +9,7 @@ import { useShallow } from 'zustand/shallow'
  * @returns {JSX.Element} Currency name or code if not found
  */
 const CoinCodeToName = ({ coin }: { coin: string }) => {
-  // 使用 useShallow 优化性能，只有当特定币种信息变化时才重渲染
+  // Use useShallow to optimize performance, only re-render when specific currency info changes
   const currencyInfo = useCurrencyStore(useShallow((state) => state.getCurrency(coin)))
 
   return <>{currencyInfo?.name || coin}</>

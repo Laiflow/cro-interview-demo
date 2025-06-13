@@ -2,39 +2,39 @@ import { Socket, io } from 'socket.io-client'
 
 export interface SocketOptions {
   /**
-   * webSocket 连接成功回调
+   * Callback when webSocket connects successfully
    */
   onOpen?: (socket: Socket) => void
   /**
-   * webSocket 关闭回调
+   * Callback when webSocket closes
    */
   onClose?: (socket: Socket) => void
   /**
-   * webSocket 收到消息回调
+   * Callback when webSocket receives a message
    */
   onMessage?: (data: any, event: string, socket: Socket) => void
   /**
-   * webSocket 错误回调
+   * Callback when webSocket encounters an error
    */
   onError?: (error: Error, socket: Socket) => void
   /**
-   * 重试次数
+   * Retry count
    */
   reconnectLimit?: number
   /**
-   * 重试时间间隔（ms）
+   * Retry interval (ms)
    */
   reconnectInterval?: number
   /**
-   * 手动启动连接
+   * Manual connection start
    */
   manual?: boolean
   /**
-   * 子协议
+   * Subprotocol
    */
   protocols?: string | string[]
   /**
-   * 消息限频间隔（ms）
+   * Message throttle interval (ms)
    */
   throttleInterval?: number
 }
@@ -64,14 +64,14 @@ export class SocketClient {
   }
 
   /**
-   * 建立连接
+   * Establish connection
    */
   connect() {
     if (this.socket) {
       return
     }
 
-    // 创建Socket.IO实例
+    // Create Socket.IO instance
     this.socket = io(this.url, {
       transports: ['websocket'],
       autoConnect: true,
@@ -79,7 +79,7 @@ export class SocketClient {
       protocols: this.options.protocols,
     })
 
-    // 监听连接成功
+    // Listen for successful connection
     this.socket.on('connect', () => {
       this.reconnectCount = 0
       if (this.options.onOpen) {
@@ -87,7 +87,7 @@ export class SocketClient {
       }
     })
 
-    // 监听断开连接
+    // Listen for disconnect
     this.socket.on('disconnect', () => {
       if (this.options.onClose) {
         this.options.onClose(this.socket!)
@@ -95,7 +95,7 @@ export class SocketClient {
       this.reconnect()
     })
 
-    // 监听错误
+    // Listen for error
     this.socket.on('connect_error', (error) => {
       if (this.options.onError) {
         this.options.onError(error, this.socket!)
@@ -103,12 +103,12 @@ export class SocketClient {
       this.reconnect()
     })
 
-    // 设置默认消息处理程序
+    // Set default message handler
     this.startQueueProcessor()
   }
 
   /**
-   * 尝试重新连接
+   * Try to reconnect
    */
   private reconnect() {
     if (
@@ -121,18 +121,18 @@ export class SocketClient {
     this.reconnectCount += 1
     this.reconnectTimer = setTimeout(() => {
       this.reconnectTimer = null
-      // 关闭现有连接
+      // Close existing connection
       if (this.socket) {
         this.socket.close()
         this.socket = null
       }
-      // 重新连接
+      // Reconnect
       this.connect()
     }, this.options.reconnectInterval)
   }
 
   /**
-   * 关闭连接
+   * Close connection
    */
   close() {
     if (this.socket) {
@@ -152,11 +152,11 @@ export class SocketClient {
   }
 
   /**
-   * 订阅事件
+   * Subscribe to events
    */
   on(event: string, callback: (data: any) => void) {
     if (!this.socket) {
-      return () => {} // 返回空函数作为取消订阅函数
+      return () => {} // Return empty function as unsubscribe function
     }
 
     const wrappedCallback = (data: any) => {
@@ -168,7 +168,7 @@ export class SocketClient {
 
     this.socket.on(event, wrappedCallback)
 
-    // 返回取消订阅函数
+    // Return unsubscribe function
     return () => {
       if (this.socket) {
         this.socket.off(event, wrappedCallback)
@@ -177,16 +177,16 @@ export class SocketClient {
   }
 
   /**
-   * 发送消息（带限频）
+   * Send message (with throttling)
    */
   emit(event: string, data: any) {
     if (!this.socket) {
-      // 如果没有连接，尝试重新连接
+      // If not connected, try to reconnect
       this.connect()
       return false
     }
 
-    // 使用事件名称作为队列名
+    // Use event name as queue name
     if (!this.messageQueue.has(event)) {
       this.messageQueue.set(event, {
         lastSent: 0,
@@ -194,7 +194,7 @@ export class SocketClient {
       })
     }
 
-    // 添加到队列
+    // Add to queue
     const eventQueue = this.messageQueue.get(event)!
     eventQueue.queue.push(data)
 
@@ -202,29 +202,29 @@ export class SocketClient {
   }
 
   /**
-   * 启动队列处理程序
+   * Start queue processor
    */
   private startQueueProcessor() {
     if (this.processQueueTimer) {
       return
     }
 
-    // 每100ms处理一次队列
+    // Process queue every 100ms
     this.processQueueTimer = setInterval(() => {
       const now = Date.now()
 
       this.messageQueue.forEach((eventQueue, event) => {
-        // 检查是否可以发送
+        // Check if message can be sent
         if (
           eventQueue.queue.length > 0 &&
           now - eventQueue.lastSent >= this.options.throttleInterval!
         ) {
-          // 从队列中取出最新消息
+          // Pop latest message from queue
           const data = eventQueue.queue.pop()
-          // 清空队列，只发送最新的
+          // Clear queue, send only latest
           eventQueue.queue = []
 
-          // 发送消息
+          // Send message
           if (this.socket) {
             this.socket.emit(event, data)
             eventQueue.lastSent = now
@@ -235,7 +235,7 @@ export class SocketClient {
   }
 
   /**
-   * 检查是否已连接
+   * Check if connected
    */
   isConnected(): boolean {
     return !!this.socket?.connected
@@ -243,7 +243,7 @@ export class SocketClient {
 }
 
 /**
- * 创建Socket.IO客户端
+ * Create Socket.IO client
  */
 export const createSocketClient = (socketUrl: string, options?: SocketOptions): SocketClient => {
   return new SocketClient(socketUrl, options)

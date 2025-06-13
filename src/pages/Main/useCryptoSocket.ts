@@ -3,9 +3,9 @@ import { useCurrencyStore } from '@/stores/atom/currency'
 import { initializeMockCurrencyData } from './presenter'
 
 /**
- * 使用加密货币Socket数据
- * 在实际环境中，这将连接到真实的Socket服务器
- * 在Demo中，我们使用模拟数据
+ * Use crypto socket data
+ * In production, this connects to a real socket server
+ * In demo, we use mock data
  */
 export const useCryptoSocket = () => {
   const {
@@ -18,19 +18,19 @@ export const useCryptoSocket = () => {
 
   // 初始化并订阅更新
   useEffect(() => {
-    // 在真实应用中，这里会连接到实际的Socket服务器
-    // 例如: const unsubscribe = subscribeToCurrencyUpdates('wss://api.example.com/socket');
-    // 例如: const unsubscribe = subscribeToCurrencyUpdates('wss://api.example.com/socket');
+    // In real app, connect to actual socket server here
+    // e.g.: const unsubscribe = subscribeToCurrencyUpdates('wss://api.example.com/socket');
+    // e.g.: const unsubscribe = subscribeToCurrencyUpdates('wss://api.example.com/socket');
 
-    // 在演示环境中，我们使用模拟数据
+    // In demo, we use mock data
     if (currencies.length === 0) {
-      // 只在初始化时执行一次
+      // Only run once on init
       initializeMockCurrencyData()
     }
 
-    // 清理函数
+    // Cleanup function
     return () => {
-      // 在实际环境中取消订阅: unsubscribe();
+      // In production, unsubscribe: unsubscribe();
     }
   }, [currencies.length])
 

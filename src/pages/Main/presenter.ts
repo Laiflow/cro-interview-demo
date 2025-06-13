@@ -1,15 +1,15 @@
 import { MockDataPusher } from '@/mockDataPusher'
 import { useCurrencyStore } from '@/stores/atom/currency'
 
-// 初始化模拟数据（仅用于演示）
+// Initialize mock data (for demo only)
 export const initializeMockCurrencyData = () => {
-  // 获取store状态和方法
+  // Get store state and methods
   const { fetchCurrencies, fetchLiveRates } = useCurrencyStore.getState()
 
-  // 加载基本货币数据
+  // Load basic currency data
   fetchCurrencies()
 
-  // 加载实时汇率数据
+  // Load real-time rate data
   fetchLiveRates()
 
   MockDataPusher.simulateRateUpdate()

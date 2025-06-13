@@ -1,9 +1,7 @@
 import React, { memo } from 'react'
 import { useCurrencyStore } from '../../../stores/atom/currency'
 import { WalletBalance } from '../../../types/wallet'
-import CoinCodeToName from '@/components/organism/CoinCodeToName'
-import PrettyAmountCoin from '@/components/organism/PrettyAmountCoin'
-import PrettyPrice from '@/components/organism/PrettyPrice'
+import { PrettyPrice, PrettyAmountCoin, CoinCodeToName } from '@/components/organism'
 import { useShallow } from 'zustand/shallow'
 
 interface TokenItemProps {
@@ -14,7 +12,7 @@ const TokenItem: React.FC<TokenItemProps> = ({ token }) => {
   const currencyInfo = useCurrencyStore(useShallow((state) => state.getCurrency(token.currency)))
 
   if (!currencyInfo) {
-    return null // 如果没有找到币种信息，不显示
+    return null // If currency info not found, do not display
   }
 
   return (

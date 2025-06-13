@@ -1,4 +1,4 @@
-// 货币基本信息
+// Basic currency info
 export interface Currency {
   coin_id: string
   name: string
@@ -25,7 +25,7 @@ export interface Currency {
   is_available?: boolean
 }
 
-// 货币实时价格
+// Real-time currency price
 export interface CurrencyRate {
   currency: string
   rate: number

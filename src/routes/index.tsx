@@ -5,7 +5,7 @@ import NotFound from '../pages/NotFound'
 import WalletPage from '../pages/Wallet'
 import DeFiPage from '../pages/DeFi'
 
-// 路由配置
+// Route config
 export const routesConfig: RouteObject[] = [
   {
     path: '/',

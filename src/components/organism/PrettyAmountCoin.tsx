@@ -25,9 +25,9 @@ const PrettyAmountCoin = ({
   showSymbol?: boolean
   precision?: number
 }) => {
-  // prevent re-render
+  // Prevent re-render
   const currencyInfo = useCurrencyStore(useShallow((state) => state.currenciesMap[code]))
-  // default 18 decimal
+  // Default 18 decimal
   const { display_decimal = 18, symbol } = currencyInfo
 
   const showText = useMemo(() => {

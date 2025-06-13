@@ -72,7 +72,7 @@ src/
 ├── routes/           # 路由配置
 │   └── index.tsx     # 路由定义
 ├── store/            # 状态管理
-│   └── walletStore.ts # 钱包状态
+│   └── currencyStore.ts # 钱包状态
 ├── styles/           # 样式文件
 │   └── tailwind.css  # TailwindCSS入口
 └── utils/            # 工具函数

@@ -31,7 +31,7 @@ const BalanceHeader: React.FC<BalanceHeaderProps> = ({
         </div>
       </div>
 
-      {/* 发送和接收按钮 */}
+      {/* Send and receive buttons */}
       <div className="flex justify-center space-x-16 mt-6 px-4">
         <div className="flex flex-col items-center">
           <button

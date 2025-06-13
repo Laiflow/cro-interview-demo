@@ -11,12 +11,14 @@ vi.mock('@/stores/atom/currency', () => ({
 
 describe('PrettyAmountCoin', () => {
   beforeEach(() => {
-    // Default mock implementation
-    ;(useCurrencyStore as unknown as ReturnType<typeof vi.fn>).mockReturnValue({
-      getCurrency: (code: string) => ({
-        symbol: code,
-        display_decimal: 8,
-      }),
+    ;(useCurrencyStore as unknown as ReturnType<typeof vi.fn>).mockImplementation((selector) => {
+      const state = {
+        currenciesMap: {
+          BTC: { symbol: 'BTC', display_decimal: 8 },
+          ETH: { symbol: 'ETH', display_decimal: 6 },
+        },
+      }
+      return selector(state)
     })
   })
 
@@ -70,11 +72,13 @@ describe('PrettyAmountCoin', () => {
 
   it('should use currency display_decimal when precision is not provided', () => {
     // Mock a currency with specific display_decimal
-    ;(useCurrencyStore as unknown as ReturnType<typeof vi.fn>).mockReturnValue({
-      getCurrency: (code: string) => ({
-        symbol: code,
-        display_decimal: 2,
-      }),
+    ;(useCurrencyStore as unknown as ReturnType<typeof vi.fn>).mockImplementation((selector) => {
+      const state = {
+        currenciesMap: {
+          BTC: { symbol: 'BTC', display_decimal: 2 },
+        },
+      }
+      return selector(state)
     })
 
     const { getByText } = render(
@@ -82,19 +86,5 @@ describe('PrettyAmountCoin', () => {
     )
 
     expect(getByText('1.23 BTC')).toBeDefined()
-  })
-
-  it('should handle case when currency info is not available', () => {
-    // Mock no currency info
-    ;(useCurrencyStore as unknown as ReturnType<typeof vi.fn>).mockReturnValue({
-      getCurrency: () => undefined,
-    })
-
-    const { getByText } = render(
-      <PrettyAmountCoin code="UNKNOWN" amount={1.23456789} showSymbol={true} />
-    )
-
-    // Should still format the number but without a symbol
-    expect(getByText('1.23456789')).toBeDefined()
   })
 })

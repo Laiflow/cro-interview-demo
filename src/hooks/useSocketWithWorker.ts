@@ -2,7 +2,7 @@ import { useEffect, useRef, useState, useCallback } from 'react'
 import { useWebWorker } from './useWebWorker'
 import { SocketOptions } from '../utils/socket'
 
-// Socket.IO Web Worker 内联代码
+// Inline code for the Socket.IO Web Worker
 const SOCKET_WORKER_CODE = `
   importScripts('https://cdn.socket.io/4.6.1/socket.io.min.js');
   
@@ -13,7 +13,7 @@ const SOCKET_WORKER_CODE = `
   let messageQueue = new Map();
   let queueTimer = null;
   
-  // 处理重连
+  // 处理重连 (handle reconnect)
   function handleReconnect() {
     if (reconnectTimer || !options || (options.reconnectLimit && reconnectCount >= options.reconnectLimit)) {
       return;
@@ -23,17 +23,17 @@ const SOCKET_WORKER_CODE = `
     
     reconnectTimer = setTimeout(() => {
       reconnectTimer = null;
-      // 关闭旧连接
+      // 关闭旧连接 (close old connection)
       if (socket) {
         socket.close();
         socket = null;
       }
-      // 重新连接
+      // 重新连接 (reconnect)
       connectSocket();
     }, options.reconnectInterval || 3000);
   }
   
-  // 处理消息队列
+  // 处理消息队列 (handle message queue)
   function startQueueProcessor() {
     if (queueTimer) {
       return;
@@ -47,12 +47,12 @@ const SOCKET_WORKER_CODE = `
           eventQueue.queue.length > 0 && 
           now - eventQueue.lastSent >= (options.throttleInterval || 1000)
         ) {
-          // 从队列取出最新消息
+          // 从队列取出最新消息 (pop latest message from queue)
           const data = eventQueue.queue.pop();
-          // 清空队列
+          // 清空队列 (clear queue)
           eventQueue.queue = [];
           
-          // 发送消息
+          // 发送消息 (send message)
           if (socket && socket.connected) {
             socket.emit(event, data);
             eventQueue.lastSent = now;
@@ -62,7 +62,7 @@ const SOCKET_WORKER_CODE = `
     }, 100);
   }
   
-  // 连接Socket
+  // 连接Socket (connect socket)
   function connectSocket() {
     if (!options || !options.url || socket) {
       return;
@@ -76,19 +76,19 @@ const SOCKET_WORKER_CODE = `
         protocols: options.protocols
       });
       
-      // 连接成功
+      // 连接成功 (on connect success)
       socket.on('connect', () => {
         reconnectCount = 0;
         self.postMessage({ type: 'SOCKET_OPEN' });
       });
       
-      // 断开连接
+      // 断开连接 (on disconnect)
       socket.on('disconnect', () => {
         self.postMessage({ type: 'SOCKET_CLOSE' });
         handleReconnect();
       });
       
-      // 连接错误
+      // 连接错误 (on connect error)
       socket.on('connect_error', (error) => {
         self.postMessage({ 
           type: 'SOCKET_ERROR', 
@@ -97,7 +97,7 @@ const SOCKET_WORKER_CODE = `
         handleReconnect();
       });
       
-      // 启动队列处理
+      // 启动队列处理 (start queue processor)
       startQueueProcessor();
       
     } catch (err) {
@@ -108,7 +108,7 @@ const SOCKET_WORKER_CODE = `
     }
   }
   
-  // 关闭Socket
+  // 关闭Socket (close socket)
   function closeSocket() {
     if (socket) {
       socket.close();
@@ -128,7 +128,7 @@ const SOCKET_WORKER_CODE = `
     self.postMessage({ type: 'SOCKET_CLOSED' });
   }
   
-  // 监听 Worker 消息
+  // 监听 Worker 消息 (listen to worker messages)
   self.addEventListener('message', (event) => {
     const { action, payload } = event.data;
     
@@ -182,7 +182,7 @@ const SOCKET_WORKER_CODE = `
         
         const { event: emitEvent, data } = payload;
         
-        // 使用事件名称作为队列名
+        // 使用事件名称作为队列名 (use event name as queue name)
         if (!messageQueue.has(emitEvent)) {
           messageQueue.set(emitEvent, {
             lastSent: 0,
@@ -190,7 +190,7 @@ const SOCKET_WORKER_CODE = `
           });
         }
         
-        // 添加到队列
+        // 添加到队列 (add to queue)
         const eventQueue = messageQueue.get(emitEvent);
         eventQueue.queue.push(data);
         
@@ -209,56 +209,37 @@ const SOCKET_WORKER_CODE = `
   });
 `
 
-// 扩展Socket选项，添加URL
+// Extend SocketOptions to add URL
 interface SocketWorkerOptions extends SocketOptions {
   /**
-   * webSocket 地址
+   * webSocket address
    */
   url: string
 }
 
-// 钩子返回值
+// Return type for the hook
 interface UseSocketWithWorkerResult {
-  /**
-   * 是否已连接
-   */
+  /** Is connected */
   isConnected: boolean
-  /**
-   * 是否正在加载
-   */
+  /** Is loading */
   isLoading: boolean
-  /**
-   * 连接错误
-   */
+  /** Connection error */
   error: Error | null
-  /**
-   * 订阅事件
-   * @param event 事件名
-   * @param callback 回调函数
-   * @returns 解除订阅函数
-   */
+  /** Subscribe to event */
   subscribe: <T = any>(event: string, callback: (data: T) => void) => () => void
-  /**
-   * 发送消息
-   * @param event 事件名
-   * @param data 消息数据
-   */
+  /** Emit message */
   emit: <T = any>(event: string, data: T) => void
-  /**
-   * 断开连接
-   */
+  /** Disconnect */
   disconnect: () => void
-  /**
-   * 连接
-   */
+  /** Connect */
   connect: () => void
 }
 
 /**
- * 使用WebWorker管理Socket.IO连接
- * @param socketUrl Socket.IO服务器地址
- * @param options 选项
- * @returns Socket控制器
+ * Manage Socket.IO connection with WebWorker
+ * @param socketUrl Socket.IO server URL
+ * @param options options
+ * @returns Socket controller
  */
 export const useSocketWithWorker = (
   socketUrl: string,
@@ -268,10 +249,10 @@ export const useSocketWithWorker = (
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState<Error | null>(null)
 
-  // 保存事件监听器
+  // Store event listeners
   const eventListeners = useRef<Map<string, Set<(data: any) => void>>>(new Map())
 
-  // 创建 WebWorker
+  // Create WebWorker
   const {
     postMessage,
     error: workerError,
@@ -280,7 +261,7 @@ export const useSocketWithWorker = (
     terminateOnUnmount: true,
   })
 
-  // 统一处理来自Worker的消息
+  // Handle messages from Worker
   const handleWorkerMessage = useCallback((message: any) => {
     const { type, payload } = message
 
@@ -290,37 +271,31 @@ export const useSocketWithWorker = (
         setIsLoading(false)
         setError(null)
         break
-
       case 'SOCKET_CLOSE':
         setIsConnected(false)
         break
-
       case 'SOCKET_ERROR':
         setError(new Error(payload.message))
         setIsLoading(false)
         break
-
-      case 'SOCKET_MESSAGE':
-        // 触发注册的事件监听器
-        const { event, data } = payload
-        const listeners = eventListeners.current.get(event)
-
+      case 'SOCKET_MESSAGE': {
+        // Trigger registered event listeners
+        const listeners = eventListeners.current.get(payload.event)
         if (listeners) {
           listeners.forEach((callback) => {
             try {
-              callback(data)
+              callback(payload.data)
             } catch (err) {
-              console.error(`Error in event listener for ${event}:`, err)
+              console.error(`Error in event listener for ${payload.event}:`, err)
             }
           })
         }
         break
-
+      }
       case 'SOCKET_CLOSED':
         setIsConnected(false)
         setIsLoading(false)
         break
-
       case 'WORKER_ERROR':
         setError(new Error(payload.message))
         setIsLoading(false)
@@ -328,11 +303,10 @@ export const useSocketWithWorker = (
     }
   }, [])
 
-  // 连接Socket
+  // Connect socket
   const connect = useCallback(() => {
     setIsLoading(true)
     setError(null)
-
     postMessage({
       action: 'CONNECT',
       payload: {
@@ -347,7 +321,7 @@ export const useSocketWithWorker = (
       })
   }, [socketUrl, options, postMessage, handleWorkerMessage])
 
-  // 断开连接
+  // Disconnect socket
   const disconnect = useCallback(() => {
     postMessage({
       action: 'DISCONNECT',
@@ -359,18 +333,16 @@ export const useSocketWithWorker = (
       })
   }, [postMessage, handleWorkerMessage])
 
-  // 订阅事件
+  // Subscribe to event
   const subscribe = useCallback(
     <T = any>(event: string, callback: (data: T) => void) => {
-      // 添加到本地监听器
+      // Add to local listeners
       if (!eventListeners.current.has(event)) {
         eventListeners.current.set(event, new Set())
       }
-
       const listeners = eventListeners.current.get(event)!
       listeners.add(callback as any)
-
-      // 告诉Worker订阅此事件
+      // Tell Worker to subscribe
       postMessage({
         action: 'SUBSCRIBE',
         payload: { event },
@@ -379,17 +351,14 @@ export const useSocketWithWorker = (
         .catch((err) => {
           setError(err)
         })
-
-      // 返回取消订阅函数
+      // Return unsubscribe function
       return () => {
         const listeners = eventListeners.current.get(event)
         if (listeners) {
           listeners.delete(callback as any)
-
-          // 如果没有监听器了，告诉Worker取消订阅
+          // If no listeners left, tell Worker to unsubscribe
           if (listeners.size === 0) {
             eventListeners.current.delete(event)
-
             postMessage({
               action: 'UNSUBSCRIBE',
               payload: { event },
@@ -405,7 +374,7 @@ export const useSocketWithWorker = (
     [postMessage, handleWorkerMessage]
   )
 
-  // 发送消息
+  // Emit message
   const emit = useCallback(
     <T = any>(event: string, data: T) => {
       postMessage({
@@ -420,18 +389,17 @@ export const useSocketWithWorker = (
     [postMessage, handleWorkerMessage]
   )
 
-  // 组件挂载时连接，除非设置了manual
+  // Connect on mount unless manual
   useEffect(() => {
     if (!options.manual) {
       connect()
     }
-
     return () => {
       disconnect()
     }
   }, [connect, disconnect, options.manual])
 
-  // 处理Worker错误
+  // Handle Worker error
   useEffect(() => {
     if (workerError) {
       setError(workerError)

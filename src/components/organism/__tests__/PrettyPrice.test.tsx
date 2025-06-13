@@ -17,16 +17,19 @@ vi.mock('../PrettyAmountCoin', () => ({
 
 describe('PrettyPrice', () => {
   beforeEach(() => {
-    // Default mock implementation
-    ;(useCurrencyStore as unknown as ReturnType<typeof vi.fn>).mockReturnValue({
-      getRate: (currency: string) => {
-        const rates = {
-          USDT: 1,
-          BTC: 10000,
-          ETH: 500,
-        }
-        return rates[currency] || 0
-      },
+    // 直接 mock 返回 rate 数字
+    ;(useCurrencyStore as unknown as ReturnType<typeof vi.fn>).mockImplementation((selector) => {
+      const state = {
+        getRate: (currency: string) => {
+          const rates = {
+            USDT: 1,
+            BTC: 10000,
+            ETH: 500,
+          }
+          return rates[currency] || 0
+        },
+      }
+      return selector(state)
     })
   })
 

@@ -10,7 +10,7 @@ export const useWalletBalance = () => {
   const rates = useCurrencyStore((state) => state.rates)
   const walletBalances = walletData?.wallet || []
 
-  // 计算某个货币的USD价值
+  // Calculate the USD value of a currency
   const getUsdBalance = useCallback(
     (currency: string) => {
       const balance = walletBalances.find((b) => b.currency === currency)

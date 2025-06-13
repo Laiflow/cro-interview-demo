@@ -74,7 +74,7 @@ describe('formatNumber', () => {
   })
 
   it('should format numbers with different currencies', () => {
-    // 欧元格式
+    // Euro format
     expect(
       formatNumber({
         value: 1000.5,
@@ -86,7 +86,7 @@ describe('formatNumber', () => {
       })
     ).toBe('€1,000.5')
 
-    // 日元格式 (无小数点)
+    // Yen format (no decimal)
     expect(
       formatNumber({
         value: 1000,
@@ -98,7 +98,7 @@ describe('formatNumber', () => {
       })
     ).toBe('¥1,000')
 
-    // 人民币格式
+    // RMB format
     expect(
       formatNumber({
         value: 1000.5,

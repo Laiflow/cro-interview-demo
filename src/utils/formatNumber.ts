@@ -1,7 +1,5 @@
 import Decimal from 'decimal.js'
 
-// 允许使用 any 的注释
-
 interface FormatNumberOptions {
   style?: 'decimal' | 'currency' | 'percent' | 'unit'
   currency?: string
@@ -16,16 +14,16 @@ const DEFAULT_OPTIONS = {
 }
 
 /**
- * 使用 Intl.NumberFormat 格式化数字
- * @param {Object} params - 格式化参数对象
- * @param {number} params.value - 需要格式化的数字
- * @param {string} [params.lang="en_US"] - 语言/地区代码（例如："en_US"、"zh_CN"）
- * @param {FormatNumberOptions} [params.options] - 格式化选项
- * @param {("decimal"|"currency"|"percent"|"unit")} [params.options.style="decimal"] - 格式化样式
- * @param {string} [params.options.currency] - 货币代码（当style为"currency"时必需，例如："USD"、"EUR"、"CNY"）
- * @param {number} [params.options.maximumFractionDigits] - 最大小数位数
- * @param {number} [params.options.minimumFractionDigits] - 最小小数位数
- * @returns {string} 格式化后的数字字符串
+ * Format number using Intl.NumberFormat
+ * @param {Object} params - Format parameters object
+ * @param {number} params.value - Number to format
+ * @param {string} [params.lang="en_US"] - Locale code (e.g., "en_US", "zh_CN")
+ * @param {FormatNumberOptions} [params.options] - Format options
+ * @param {("decimal"|"currency"|"percent"|"unit")} [params.options.style="decimal"] - Format style
+ * @param {string} [params.options.currency] - Currency code (required if style is "currency", e.g., "USD", "EUR", "CNY")
+ * @param {number} [params.options.maximumFractionDigits] - Max fraction digits
+ * @param {number} [params.options.minimumFractionDigits] - Min fraction digits
+ * @returns {string} Formatted number string
  */
 export const formatNumber = (
   params: {

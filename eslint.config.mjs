@@ -1,7 +1,7 @@
-import eslint from "@eslint/js";
-import tseslint from "typescript-eslint";
-import react from "eslint-plugin-react";
-import prettierRecommended from "eslint-plugin-prettier/recommended";
+import eslint from '@eslint/js'
+import tseslint from 'typescript-eslint'
+import react from 'eslint-plugin-react'
+import prettierRecommended from 'eslint-plugin-prettier/recommended'
 
 export default tseslint.config(
   eslint.configs.recommended,
@@ -11,12 +11,12 @@ export default tseslint.config(
   {
     settings: {
       react: {
-        version: "detect",
+        version: 'detect',
       },
     },
     rules: {
-      "@typescript-eslint/no-explicit-any": "off",
-      semi: ["error", "never"],
+      '@typescript-eslint/no-explicit-any': 'off',
+      semi: ['error', 'never'],
     },
   }
-);
+)

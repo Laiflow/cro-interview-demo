@@ -39,7 +39,7 @@ const WalletDashboard: React.FC = () => {
         onReceiveClick={handleReceiveClick}
       />
 
-      {/* 币种列表 */}
+      {/* Token list */}
       <div className="flex-1 bg-[#f4fafe]  rounded-2xl overflow-hidden">
         <TokenList tokens={walletBalances} />
       </div>
