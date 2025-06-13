@@ -7,17 +7,17 @@ interface SocketClient {
   emit: (event: string, data: Currency | CurrencyRate) => void
 }
 
-// // 模拟推送货币基本信息更新
+/** Simulate pushing currency basic information updates */
 export class MockDataPusher {
   /**
-   *  mock 费率推送
+   *  mock rate-data push
    * @static
    * @param {SocketClient} [socketClient]
    *
    * @memberOf MockDataPusher
    */
   static simulateRateUpdate(socketClient?: SocketClient) {
-    // 定时5s
+    // Set interval to 5s
     setInterval(() => {
       const mockRates = {
         USDT: '1.000727',
@@ -35,13 +35,13 @@ export class MockDataPusher {
 
       Object.entries(newMockRates).forEach((entity) => {
         const [currency, newRate] = entity
-        // 如果在真实环境中，这里会通过WebSocket发送消息
+        // In a real environment, this would send messages via WebSocket
         if (socketClient) {
           socketClient.emit(CURRENCY_RATES_EVENT, {
             [currency]: newRate,
           } as unknown as CurrencyRate)
         } else {
-          // 在没有socket客户端的情况下直接更新store（仅用于测试）
+          // Directly update store when no socket client is available (for testing only)
           const { updateRate } = useCurrencyStore.getState()
           updateRate(currency, newRate as number)
         }

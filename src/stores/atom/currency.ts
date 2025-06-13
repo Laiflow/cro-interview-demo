@@ -3,6 +3,7 @@ import { useSocketWithWorker } from '../../hooks/useSocketWithWorker'
 import { fetchCurrencies, fetchLiveRates } from '../../services/mockApi'
 import { Currency, CurrencyRate } from '@/types/currency'
 import { CURRENCY_BASIC_INFO_EVENT, CURRENCY_RATES_EVENT } from '@/constants/socketEvent'
+import { dividedBy, multiply } from '@/utils/operation'
 
 export interface CurrencyState {
   // Currency data
@@ -206,12 +207,12 @@ export const useCurrencyStore = create<CurrencyState>((set, get) => ({
   // Convert currency amount to USD
   convertToUsd: (amount: number, currency: string) => {
     const rate = get().getRate(currency)
-    return amount * rate
+    return multiply(amount)(rate)
   },
 
   // Convert USD amount to the specified currency
   convertFromUsd: (amount: number, currency: string) => {
     const rate = get().getRate(currency)
-    return rate ? amount / rate : 0
+    return rate ? dividedBy(amount)(rate) : 0
   },
 }))
