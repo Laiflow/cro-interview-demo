@@ -13,7 +13,7 @@ export const useCryptoSocket = () => {
     isLoading,
     error,
     socketConnected,
-    // subscribeToCurrencyUpdates // ws订阅币服数据
+    // subscribeToCurrencyUpdates // ws subscribe Currency update function To Pass
   } = useCurrencyStore()
 
   // 初始化并订阅更新

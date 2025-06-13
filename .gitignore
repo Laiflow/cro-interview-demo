@@ -4,7 +4,6 @@ yarn-debug.log*
 yarn-error.log*
 node_modules/
 dist/
-coverage/
 .npm
 .eslintcache
 .yarn-integrity
@@ -14,3 +13,6 @@ coverage/
 .ini
 web-interview-onchain-coding-test/demo-1.png
 web-interview-onchain-coding-test/README.md
+
+# //TODO: remove comments
+# coverage/

@@ -3,6 +3,13 @@ import { COMMON_REFRESH_INTERVAL } from '@/constants'
 import { PersistTimeMap } from '@/config/queryClient'
 import { fetchWalletBalance } from '../services/mockApi'
 import { WalletBalance } from '../types/wallet'
+
+/**
+ * React Query hook to fetch wallet balance data.
+ * Refetches every COMMON_REFRESH_INTERVAL ms.
+ * Returns wallet balance response object.
+ */
+
 export interface WalletBalanceResponse {
   ok: boolean
   warning: string

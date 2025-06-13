@@ -1,10 +1,12 @@
 import React, { memo } from 'react'
 import { Link, useLocation } from 'react-router-dom'
 
+// Footer navigation tabs for Wallet and DeFi pages
 const FooterTabs: React.FC = () => {
   const location = useLocation()
   const currentPath = location.pathname
 
+  // Check if a tab is active
   const isActive = (path: string) => {
     if (path === '/wallet') {
       return currentPath === '/wallet' || currentPath === '/'
@@ -18,6 +20,7 @@ const FooterTabs: React.FC = () => {
         to="/wallet"
         className={`flex flex-col items-center justify-center w-full h-full ${isActive('/wallet') ? 'text-blue-500' : 'text-gray-500'}`}
       >
+        {/* Wallet Tab Icon */}
         <svg
           className="w-6 h-6"
           fill="none"
@@ -39,6 +42,7 @@ const FooterTabs: React.FC = () => {
         to="/defi"
         className={`flex flex-col items-center justify-center w-full h-full ${isActive('/defi') ? 'text-blue-500' : 'text-gray-500'}`}
       >
+        {/* DeFi Tab IC */}
         <svg
           className="w-6 h-6"
           fill="none"

@@ -4,11 +4,12 @@ import TokenList from './components/TokenList'
 import BalanceHeader from './components/BalanceHeader'
 import { useClick } from './hooks/useClick'
 
+// Wallet dashboard page
 const WalletDashboard: React.FC = () => {
   const { totalBalance, walletBalances, isLoading, error, refetch } = useWalletBalance()
-
   const { handleSendClick, handleReceiveClick } = useClick()
 
+  // Show loading state
   if (isLoading) {
     return (
       <div className="flex items-center justify-center p-10 text-white">
@@ -17,6 +18,7 @@ const WalletDashboard: React.FC = () => {
     )
   }
 
+  // Show error state
   if (error) {
     return (
       <div className="flex flex-col items-center justify-center p-10 text-white">
@@ -31,6 +33,7 @@ const WalletDashboard: React.FC = () => {
     )
   }
 
+  // Main wallet content
   return (
     <div className="flex flex-col flex-1 text-white">
       <BalanceHeader
@@ -39,7 +42,7 @@ const WalletDashboard: React.FC = () => {
         onReceiveClick={handleReceiveClick}
       />
 
-      {/* Token list */}
+      {/* Token list section */}
       <div className="flex-1 bg-[#f4fafe]  rounded-2xl overflow-hidden">
         <TokenList tokens={walletBalances} />
       </div>

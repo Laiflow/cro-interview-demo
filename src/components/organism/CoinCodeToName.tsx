@@ -15,5 +15,4 @@ const CoinCodeToName = ({ coin }: { coin: string }) => {
   return <>{currencyInfo?.name || coin}</>
 }
 
-// 使用 memo 避免不必要的重渲染
 export default memo(CoinCodeToName)

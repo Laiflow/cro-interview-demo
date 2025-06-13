@@ -1,4 +1,4 @@
-// Mock API 数据
+// mock API
 export const walletBalanceData = {
   ok: true,
   warning: '',
@@ -195,7 +195,7 @@ export const liveRatesData = {
   ],
 }
 
-// 模拟API调用
+// simulate request
 export const fetchWalletBalance = (): Promise<typeof walletBalanceData> => {
   return new Promise((resolve) => {
     setTimeout(() => resolve(walletBalanceData), 500)
